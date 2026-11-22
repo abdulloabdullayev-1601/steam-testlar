@@ -430,7 +430,7 @@ const TEACHER='ustoz@talaba.testmashqi.app';
 firebase.initializeApp({apiKey:"AIzaSyAxc5deE9J971Ky_1sldU6PDF6EyP5Jk50",authDomain:"steam-fanlari-testlar.firebaseapp.com",projectId:"steam-fanlari-testlar",storageBucket:"steam-fanlari-testlar.firebasestorage.app",messagingSenderId:"35053875643",appId:"1:35053875643:web:ff1907b859760e9ce0149e"});
 const auth=firebase.auth(),db=firebase.firestore();
 let me=null,ism='',newName='',tmr=null,amode='in',TR=[],sinf='',newSinf='';
-const SINF=['9.01. Abu Rayhon Beruniy','9.02. Abu Rayhon Beruniy','10.01. Abu Nasr Farobiy','10.02. Abu Nasr Farobiy','11.01. Alisher Navoiy','11.02. Alisher Navoiy'];
+const SINF=["8.01. Ahmad Al-Farg'oniy","8.02. Ahmad Al-Farg'oniy",'9.01. Abu Rayhon Beruniy','9.02. Abu Rayhon Beruniy','10.01. Abu Nasr Farobiy','10.02. Abu Nasr Farobiy','11.01. Alisher Navoiy','11.02. Alisher Navoiy'];
 const sinfOpts=first=>'<option value="">'+first+'</option>'+SINF.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
 const sk=s=>String(s||'').split(' ')[0].replace(/\.$/,'');
 const isT=u=>!!u&&(u.email||'').toLowerCase()===TEACHER;
