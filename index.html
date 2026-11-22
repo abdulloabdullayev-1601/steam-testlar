@@ -110,6 +110,31 @@ body.wait #authForm,body:not(.wait) #aWait,body.wait #vBox,body:not(.verify) #vB
 .tw td{white-space:normal}
 .tw td:first-child{min-width:170px}.tw td:nth-child(2){min-width:200px}
 .tw td.n,.tw td:last-child{white-space:nowrap}
+/* reyting */
+.rank{margin-top:18px}
+.rtabs{margin:10px 0 2px}
+.pod{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
+.pod li{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+.pod .m{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:700 15px Inter,sans-serif;color:#fff}
+.m1{background:#c29a1c}.m2{background:#8a96a3}.m3{background:#b06b3a}
+.pod .nm{flex:1;font-weight:600}.pod .pt{font-variant-numeric:tabular-nums;color:var(--mut);white-space:nowrap}.pod .pt b{color:var(--ink)}
+.pod li.me{border-color:var(--acc);background:var(--accs)}
+.me-line{font-size:14px;color:var(--mut);margin:12px 0 0}.me-line b{color:var(--ink)}
+.hist{margin-top:18px}.hist h3{font:600 15px Inter,sans-serif;margin:0 0 6px}
+.hrow{display:grid;grid-template-columns:minmax(120px,auto) minmax(0,1fr);gap:4px 14px;padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+.hrow>span{color:var(--mut)}
+#uBall b{color:var(--acc)}
+/* savollar muharriri */
+.qed h3{font:600 17px Inter,sans-serif;margin:8px 0 0}
+.qi{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:12px 0;border-top:1px solid var(--line);font-size:14.5px}
+.qi p{margin:0;flex:1;white-space:pre-wrap}.qi small{color:var(--mut)}
+.qi .acts{display:flex;gap:6px;flex-wrap:wrap;flex:none}
+.btn.s{min-height:36px;padding:0 12px;font-size:13.5px}
+.tag{display:inline-block;font-size:12px;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--okbg);color:var(--ok);margin-left:6px;white-space:nowrap}
+.tag.h{background:var(--badbg);color:var(--bad)}
+#qForm{margin-top:14px;padding:16px;border:1.5px solid var(--acc);border-radius:16px}
+#qForm[hidden]{display:none}
+@media(max-width:600px){.qi{flex-direction:column}}
 .tw td.n{font-variant-numeric:tabular-nums}
 .tw tr:last-child td{border-bottom:0}
 .pct{display:inline-block;min-width:52px;padding:2px 8px;border-radius:999px;font-weight:600;text-align:center}
@@ -126,7 +151,7 @@ body.wait #authForm,body:not(.wait) #aWait,body.wait #vBox,body:not(.verify) #vB
     <button class="mode" id="modeBtn" type="button" aria-label="Rejimni almashtirish"></button>
     <h1>Fanlar bo'yicha test mashqi</h1>
     <p class="sub">IGCSE (Pearson Edexcel va Cambridge), AS va A Level (Cambridge). Xato qilgan savolingiz tez-tez qaytadi, bilganingiz kamroq chiqadi.</p>
-    <div class="ubar" id="ubar"><span><b id="uName"></b> · <span id="uEm"></span></span><button class="btn g" id="out" type="button">Chiqish</button></div>
+    <div class="ubar" id="ubar"><span><b id="uName"></b> · <span id="uEm"></span> <span id="uBall"></span></span><button class="btn g" id="out" type="button">Chiqish</button></div>
     <div class="seg" id="levels" role="group" aria-label="Daraja"></div>
   </div>
 </header>
@@ -166,6 +191,13 @@ body.wait #authForm,body:not(.wait) #aWait,body.wait #vBox,body:not(.verify) #vB
     <div id="qb"></div>
   </section>
 
+  <section class="acard wide rank" id="rank">
+    <h2>Reyting</h2>
+    <p class="note">Har bir to'g'ri javob uchun 10 ball. Bitta savol uchun kuniga faqat bir marta ball beriladi.</p>
+    <div class="seg rtabs" id="rTabs" role="group" aria-label="Davr"><button type="button" data-r="kun" aria-pressed="true">Bugun</button><button type="button" data-r="hafta" aria-pressed="false">Shu hafta</button><button type="button" data-r="oy" aria-pressed="false">Shu oy</button></div>
+    <div id="rBody"></div>
+  </section>
+
   <details id="addBox">
     <summary>O'z savolingizni qo'shish</summary>
     <p class="note">O'qituvchi bergan qog'oz yoki o'tgan yillar savollarini shu yerga kiriting. Savol yuqorida tanlangan fanga qo'shiladi va hisobingizda saqlanadi.</p>
@@ -196,6 +228,34 @@ body.wait #authForm,body:not(.wait) #aWait,body.wait #vBox,body:not(.verify) #vB
     <div class="tsum" id="tSum"></div><div class="err" id="tMsg"></div>
   </section>
   <div class="tw"><table><thead><tr><th>O'quvchi</th><th>Fan</th><th>Ishlangan savollar</th><th>To'g'ri javoblar</th><th>O'zlashtirildi</th><th>Oxirgi faollik</th></tr></thead><tbody id="tBody"></tbody></table></div>
+  <div id="tRank"></div>
+  <section class="acard wide qed" id="qed" style="margin-top:18px">
+    <h2>Savollarni boshqarish</h2>
+    <p class="note">Bu yerda qilgan o'zgarishlaringiz barcha o'quvchilarga ko'rinadi (sahifani qayta ochganda). Asl savolni tahrirlasangiz yoki yashirsangiz, «Asl holiga qaytarish» bilan qaytarib olasiz.</p>
+    <div class="tbar"><select id="qLvl" aria-label="Daraja"></select><select id="qSub" aria-label="Fan"></select></div>
+    <div class="tbar"><select id="qTop" aria-label="Mavzu"></select><input id="qS" type="search" placeholder="Savol matni bo'yicha qidirish" aria-label="Savol qidirish"><button class="btn" id="qNew" type="button">+ Yangi savol</button></div>
+    <form id="qForm" hidden>
+      <h3 id="qFT">Yangi savol</h3>
+      <label for="qfT">Mavzu</label><select id="qfT"></select>
+      <label for="qfK">Turi</label><select id="qfK"><option value="mcq">A–D test</option><option value="w">Yozma javob</option></select>
+      <label for="qfQ">Savol</label><textarea id="qfQ"></textarea>
+      <div id="qfMcq">
+        <div class="g2">
+          <div><label for="qfA">A</label><input id="qfA"></div>
+          <div><label for="qfB">B</label><input id="qfB"></div>
+          <div><label for="qfC">C</label><input id="qfC"></div>
+          <div><label for="qfD">D</label><input id="qfD"></div>
+        </div>
+        <label for="qfR">To'g'ri javob</label><select id="qfR"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+      </div>
+      <div id="qfW" hidden><label for="qfW1">Qabul qilinadigan javoblar (har biri alohida qatorda)</label><textarea id="qfW1"></textarea></div>
+      <label for="qfE">Izoh (ixtiyoriy)</label><textarea id="qfE"></textarea>
+      <div class="row" style="justify-content:flex-start"><button class="btn" type="submit">Saqlash</button><button class="btn g" type="button" id="qfX">Bekor qilish</button></div>
+      <div class="err" id="qfErr"></div>
+    </form>
+    <div class="msg" id="qInfo"></div>
+    <div id="qList"></div>
+  </section>
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -299,18 +359,18 @@ function answer(i){
   if(answered||!cur||cur.a===-1)return;answered=true;
   const ok=i===cur.a,g=prog[cur.id]||{b:0,s:0,w:0};
   g.s=(g.s||0)+1;if(ok)g.b=Math.min((g.b||0)+1,4);else{g.b=0;g.w=(g.w||0)+1}
-  prog[cur.id]=g;save();sess.n++;if(ok)sess.r++;
+  prog[cur.id]=g;const pts=ok?award(cur.id):0;save();sess.n++;if(ok)sess.r++;
   last=cur.id;render();
   document.querySelectorAll('.op').forEach(b=>{b.disabled=true;const j=+b.dataset.i;if(j===cur.a)b.classList.add('ok');else if(j===i)b.classList.add('bad')});
-  $('fbx').innerHTML=`<div class="fb ${ok?'':'no'}"><b>${ok?"To'g'ri!":"Noto'g'ri. To'g'ri javob: "+'ABCD'[cur.a]}</b>${cur.e?esc(cur.e):''}</div>`;
+  $('fbx').innerHTML=`<div class="fb ${ok?'':'no'}"><b>${ok?"To'g'ri!"+(pts?' +'+pts+' ball':''):"Noto'g'ri. To'g'ri javob: "+'ABCD'[cur.a]}</b>${cur.e?esc(cur.e):''}</div>`;
   stats();$('nx').focus();
 }
 const norm=s=>String(s).toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[−–]/g,'-').replace(/>=/g,'≥').replace(/<=/g,'≤').replace(/(^|[\s(,=<>≤≥])-(?=\d)/g,'$1~').replace(/[‐-―\-_/]/g,' ').replace(/[^a-z0-9.+ <>=≤≥~]/g,'').replace(/~/g,'-').replace(/\s+/g,' ').replace(/\.$/,'').trim().replace(/^(the|a|an) /,'');
 function score(ok){const g=prog[cur.id]||{b:0,s:0,w:0};g.s=(g.s||0)+1;if(ok)g.b=Math.min((g.b||0)+1,4);else{g.b=0;g.w=(g.w||0)+1}prog[cur.id]=g;save();sess.n++;if(ok)sess.r++;last=cur.id}
 function answerW(txt){
   if(answered||!cur||!txt.trim())return;answered=true;
-  const sq=s=>norm(s).replace(/ /g,'');const ok=cur.o.some(a=>norm(a)?(norm(a)===norm(txt)||sq(a)===sq(txt)):a.trim()===txt.trim());score(ok);render();$('wi').value=txt;
-  $('fbx').innerHTML=`<div class="fb ${ok?'':'no'}"><b>${ok?"To'g'ri!":"Noto'g'ri."}</b>${ok?'':`Siz yozdingiz: <i>${esc(txt)}</i>. `}To'g'ri javob: <b style="display:inline;color:inherit">${esc(cur.o[0])}</b>${cur.o.length>1?` (yoki: ${cur.o.slice(1).map(esc).join(', ')})`:''}.<br>${cur.e?esc(cur.e):''}${ok?'':`<div style="margin-top:10px"><button class="btn g" id="fix" type="button">Javobim aslida to'g'ri edi</button></div>`}</div>`;
+  const sq=s=>norm(s).replace(/ /g,'');const ok=cur.o.some(a=>norm(a)?(norm(a)===norm(txt)||sq(a)===sq(txt)):a.trim()===txt.trim());score(ok);const pts=ok?award(cur.id):0;render();$('wi').value=txt;
+  $('fbx').innerHTML=`<div class="fb ${ok?'':'no'}"><b>${ok?"To'g'ri!"+(pts?' +'+pts+' ball':''):"Noto'g'ri."}</b>${ok?'':`Siz yozdingiz: <i>${esc(txt)}</i>. `}To'g'ri javob: <b style="display:inline;color:inherit">${esc(cur.o[0])}</b>${cur.o.length>1?` (yoki: ${cur.o.slice(1).map(esc).join(', ')})`:''}.<br>${cur.e?esc(cur.e):''}${ok?'':`<div style="margin-top:10px"><button class="btn g" id="fix" type="button">Javobim aslida to'g'ri edi</button></div>`}</div>`;
   stats();$('nx').focus();
 }
 function refresh(){topic=0;chips();stats();mine();save();next()}
@@ -378,7 +438,168 @@ function summary(){
 function push(){
   clearTimeout(tmr);tmr=null;
   if(!me||isT(me))return Promise.resolve();
-  return db.collection('users').doc(me.uid).set({email:me.email,ism,prog:JSON.stringify(prog),custom:JSON.stringify(custom),fanlar:summary(),yangilangan:firebase.firestore.FieldValue.serverTimestamp()}).catch(e=>console.error('Saqlanmadi',e));
+  prune();
+  const ts=firebase.firestore.FieldValue.serverTimestamp();
+  return Promise.all([
+    db.collection('users').doc(me.uid).set({email:me.email,ism,prog:JSON.stringify(prog),custom:JSON.stringify(custom),bugun:JSON.stringify(bugun),fanlar:summary(),yangilangan:ts}),
+    db.collection('reyting').doc(me.uid).set({ism:ism||"O'quvchi",kun:ball.kun,hafta:ball.hafta,oy:ball.oy,yangilangan:ts})
+  ]).catch(e=>console.error('Saqlanmadi',e));
+}
+
+/* ---------- ball va reyting ---------- */
+const TZ=5*36e5,pad=n=>String(n).padStart(2,'0');
+const OY=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
+const tz=t=>new Date((t==null?Date.now():t)+TZ);
+const ymd=d=>d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)+'-'+pad(d.getUTCDate());
+const dayKey=t=>ymd(tz(t));
+const weekKey=t=>{const d=tz(t);return ymd(new Date(d.getTime()-((d.getUTCDay()+6)%7)*864e5))};
+const monthKey=t=>{const d=tz(t);return d.getUTCFullYear()+'-'+pad(d.getUTCMonth()+1)};
+const kd=k=>new Date(k+'T00:00:00Z');
+const LBL={
+  kun:k=>{const d=kd(k);return d.getUTCDate()+'-'+OY[d.getUTCMonth()]},
+  hafta:k=>{const a=kd(k),b=new Date(a.getTime()+6*864e5);return a.getUTCMonth()===b.getUTCMonth()?a.getUTCDate()+'–'+b.getUTCDate()+' '+OY[a.getUTCMonth()]:a.getUTCDate()+' '+OY[a.getUTCMonth()]+' – '+b.getUTCDate()+' '+OY[b.getUTCMonth()]},
+  oy:k=>{const p=k.split('-'),n=OY[+p[1]-1];return n[0].toUpperCase()+n.slice(1)+' '+p[0]}
+};
+const curKey=p=>p==='kun'?dayKey():p==='hafta'?weekKey():monthKey();
+let ball={kun:{},hafta:{},oy:{}},bugun={d:'',ids:[]},RK=[],rper='kun';
+const normBall=r=>({kun:(r&&r.kun)||{},hafta:(r&&r.hafta)||{},oy:(r&&r.oy)||{}});
+function award(id){
+  if(!me||isT(me))return 0;
+  const d=dayKey();if(bugun.d!==d)bugun={d,ids:[]};
+  if(bugun.ids.indexOf(id)>=0)return 0;
+  bugun.ids.push(id);
+  const P=10,w=weekKey(),m=monthKey();
+  ball.kun[d]=(ball.kun[d]||0)+P;ball.hafta[w]=(ball.hafta[w]||0)+P;ball.oy[m]=(ball.oy[m]||0)+P;
+  showBall();mineToRK();drawRank();
+  return P;
+}
+function prune(){const cut=(o,n)=>Object.keys(o).sort().reverse().slice(n).forEach(k=>delete o[k]);cut(ball.kun,40);cut(ball.hafta,60)}
+function showBall(){$('uBall').innerHTML=me&&!isT(me)?'· Bugun: <b>'+(ball.kun[dayKey()]||0)+'</b> ball':''}
+function mineToRK(){
+  if(!me||isT(me))return;
+  let r=RK.find(x=>x.uid===me.uid);if(!r){r={uid:me.uid};RK.push(r)}
+  r.ism=ism||"O'quvchi";r.kun=ball.kun;r.hafta=ball.hafta;r.oy=ball.oy;
+}
+async function loadRank(){
+  try{const qs=await db.collection('reyting').get();RK=[];qs.forEach(d=>{const x=d.data();RK.push(Object.assign({uid:d.id,ism:x.ism||"O'quvchi"},normBall(x)))});mineToRK()}
+  catch(e){console.error('Reyting yuklanmadi',e)}
+  drawRank();
+}
+const top=(p,k,n)=>RK.map(r=>({uid:r.uid,ism:r.ism,b:(r[p]||{})[k]||0})).filter(x=>x.b>0).sort((a,b)=>b.b-a.b||a.ism.localeCompare(b.ism)).slice(0,n||1e9);
+function drawRank(){
+  $('rTabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.r===rper));
+  const k=curKey(rper),all=top(rper,k),mine=me&&!isT(me)?me.uid:null;
+  const NM={kun:'Bugun',hafta:'Shu hafta',oy:'Shu oy'},HN={kun:"O'tgan kunlar",hafta:'Yakunlangan haftalar',oy:'Yakunlangan oylar'};
+  const li=(x,i)=>`<li class="${x.uid===mine?'me':''}"><span class="m m${i+1}">${i+1}</span><span class="nm">${esc(x.ism)}</span><span class="pt"><b>${x.b}</b> ball</span></li>`;
+  let h=`<p class="note" style="margin:10px 0 0">${NM[rper]}: ${esc(LBL[rper](k))}</p>`;
+  h+=all.length?`<ol class="pod">${all.slice(0,3).map(li).join('')}</ol>`:`<p class="empty" style="padding:20px">Hali hech kim ball to'plamagan.</p>`;
+  if(mine){const i=all.findIndex(x=>x.uid===mine);h+=`<p class="me-line">${i<0?"Siz bu davrda hali ball to'plamagansiz.":`Sizning o'rningiz: <b>${i+1}-o'rin</b> · <b>${all[i].b}</b> ball`}</p>`}
+  const keys=[...new Set([].concat(...RK.map(r=>Object.keys(r[rper]||{}))))].filter(x=>x<k).sort().reverse().slice(0,rper==='kun'?7:rper==='hafta'?8:12);
+  const hk=keys.filter(kk=>top(rper,kk,1).length);
+  if(hk.length)h+=`<div class="hist"><h3>${HN[rper]}: top 3</h3>${hk.map(kk=>`<div class="hrow"><span>${esc(LBL[rper](kk))}</span><div>${top(rper,kk,3).map((x,i)=>`${i+1}. <b>${esc(x.ism)}</b> (${x.b})`).join(' · ')}</div></div>`).join('')}</div>`;
+  $('rBody').innerHTML=h;
+}
+$('rTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b&&b.dataset.r){rper=b.dataset.r;drawRank()}});
+setInterval(()=>{if(me&&document.visibilityState==='visible')loadRank()},60000);
+
+/* ---------- ustoz o'zgartirgan savollar ---------- */
+let OVR={};
+function rebuildBank(){
+  BANK.length=0;
+  Object.keys(COURSES).forEach(c=>(window.__DATA[c]||[]).forEach(([id,t,q,o,a,e])=>BANK.push({id,c,t,q,o,a,e})));
+  const at=new Map(BANK.map((q,i)=>[q.id,i])),hide=new Set();
+  for(const id in OVR){
+    const v=OVR[id];if(v.yashirin){hide.add(id);continue}
+    const q={id,c:v.c,t:v.t,q:v.q,o:v.o,a:v.a,e:v.e||''};
+    if(at.has(id))BANK[at.get(id)]=q;else BANK.push(q);
+  }
+  if(hide.size){const keep=BANK.filter(q=>!hide.has(q.id));BANK.length=0;keep.forEach(q=>BANK.push(q))}
+}
+async function loadOvr(){
+  try{const qs=await db.collection('savollar').get();OVR={};qs.forEach(d=>{OVR[d.id]=d.data()})}
+  catch(e){console.error("Ustoz savollari yuklanmadi",e)}
+  rebuildBank();
+}
+let qeLvl='igcse',qeSub='bio',qeEdit=null;
+const qeCourse=()=>CID[qeLvl][qeSub];
+const opts=list=>list.map(([k,v])=>`<option value="${esc(k)}">${esc(v)}</option>`).join('');
+function qeInit(){$('qLvl').innerHTML=opts(LEVELS);$('qLvl').value=qeLvl;qeSubs()}
+function qeSubs(){
+  const av=SUBJ.filter(([k])=>CID[qeLvl][k]);if(!CID[qeLvl][qeSub])qeSub=av[0][0];
+  $('qSub').innerHTML=opts(av);$('qSub').value=qeSub;qeTopics();
+}
+function qeTopics(){
+  const te=Object.entries(COURSES[qeCourse()].topics);
+  $('qTop').innerHTML='<option value="0">Barcha mavzular</option>'+opts(te);$('qfT').innerHTML=opts(te);
+  $('qForm').hidden=true;qeList();
+}
+function qeAll(){
+  const c=qeCourse(),seen=new Set(),out=[];
+  (window.__DATA[c]||[]).forEach(([id,t,q,o,a,e])=>{seen.add(id);const v=OVR[id];out.push(v&&!v.yashirin?{id,c,t:v.t,q:v.q,o:v.o,a:v.a,e:v.e||'',st:'ed'}:{id,c,t,q,o,a,e:e||'',st:v?'hid':''})});
+  for(const id in OVR){const v=OVR[id];if(!seen.has(id)&&v.c===c)out.push({id,c,t:v.t,q:v.q,o:v.o,a:v.a,e:v.e||'',st:'new'})}
+  return out;
+}
+function qeList(){
+  const tp=+$('qTop').value,s=$('qS').value.trim().toLowerCase(),T=COURSES[qeCourse()].topics;
+  const all=qeAll().filter(q=>(!tp||q.t===tp)&&(!s||String(q.q).toLowerCase().includes(s))).sort((a,b)=>(b.st==='new')-(a.st==='new'));
+  const L=all.slice(0,40);
+  $('qInfo').textContent=all.length+' ta savol'+(all.length>40?" (birinchi 40 tasi ko'rsatilmoqda, aniqroq qidiring)":'');
+  $('qList').innerHTML=L.map(q=>{
+    const tag=q.st==='new'?'<span class="tag">yangi</span>':q.st==='ed'?'<span class="tag">tahrirlangan</span>':q.st==='hid'?'<span class="tag h">yashirilgan</span>':'';
+    let ans=q.a===-1?'Yozma javob: '+q.o.join(' / '):q.o.map((o,i)=>(i===q.a?'✓ ':'')+'ABCD'[i]+') '+o).join('   ');
+    if(ans.length>220)ans=ans.slice(0,220)+'…';
+    const qt=String(q.q).length>260?String(q.q).slice(0,260)+'…':q.q;
+    const b2=q.st==='new'?`<button class="btn g s" type="button" data-qd="${esc(q.id)}">O'chirish</button>`:q.st===''?`<button class="btn g s" type="button" data-qh="${esc(q.id)}">Yashirish</button>`:`<button class="btn g s" type="button" data-qr="${esc(q.id)}">Asl holiga qaytarish</button>`;
+    return `<div class="qi"><p>${esc(qt)}${tag}<br><small>${esc(T[q.t]||'')} · ${esc(ans)}</small></p><div class="acts">${q.st==='hid'?'':`<button class="btn g s" type="button" data-qe="${esc(q.id)}">Tahrirlash</button>`}${b2}</div></div>`;
+  }).join('')||'<p class="empty">Savol topilmadi.</p>';
+}
+function qeKind(){const w=$('qfK').value==='w';$('qfMcq').hidden=w;$('qfW').hidden=!w}
+function qeOpen(q){
+  qeEdit=q?q.id:null;$('qFT').textContent=q?'Savolni tahrirlash':'Yangi savol';$('qfErr').textContent='';
+  const te=Object.keys(COURSES[qeCourse()].topics);
+  $('qfT').value=q?String(q.t):($('qTop').value!=='0'?$('qTop').value:te[0]);
+  const w=!!q&&q.a===-1;$('qfK').value=w?'w':'mcq';qeKind();
+  $('qfQ').value=q?q.q:'';
+  ['qfA','qfB','qfC','qfD'].forEach((id,i)=>{$(id).value=q&&!w?(q.o[i]||''):''});
+  $('qfR').value=String(q&&!w?q.a:0);$('qfW1').value=w?q.o.join('\n'):'';$('qfE').value=q?q.e||'':'';
+  $('qForm').hidden=false;$('qForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+$('qLvl').addEventListener('change',()=>{qeLvl=$('qLvl').value;qeSubs()});
+$('qSub').addEventListener('change',()=>{qeSub=$('qSub').value;qeTopics()});
+$('qTop').addEventListener('change',qeList);
+$('qS').addEventListener('input',qeList);
+$('qNew').addEventListener('click',()=>qeOpen(null));
+$('qfK').addEventListener('change',qeKind);
+$('qfX').addEventListener('click',()=>{$('qForm').hidden=true});
+$('qForm').addEventListener('submit',async e=>{
+  e.preventDefault();$('qfErr').textContent='';
+  const w=$('qfK').value==='w',q=$('qfQ').value.trim();let o,a;
+  if(!q){$('qfErr').textContent='Savol matnini yozing.';return}
+  if(w){o=$('qfW1').value.split('\n').map(s=>s.trim()).filter(Boolean);a=-1;if(!o.length){$('qfErr').textContent="Kamida bitta to'g'ri javob yozing.";return}}
+  else{o=['qfA','qfB','qfC','qfD'].map(id=>$(id).value.trim());a=+$('qfR').value;if(o.some(x=>!x)){$('qfErr').textContent="To'rtta variantni ham to'ldiring.";return}}
+  const id=qeEdit||('ust-'+Date.now().toString(36));
+  const d={c:qeCourse(),t:+$('qfT').value,q,o,a,e:$('qfE').value.trim(),yashirin:false,yangilangan:firebase.firestore.FieldValue.serverTimestamp()};
+  try{await db.collection('savollar').doc(id).set(d);OVR[id]=d;rebuildBank();$('qForm').hidden=true;qeList();$('qInfo').textContent='Saqlandi. '+$('qInfo').textContent}
+  catch(err){$('qfErr').textContent='Saqlanmadi. '+errMsg(err)}
+});
+$('qList').addEventListener('click',async e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const find=id=>qeAll().find(q=>q.id===id);
+  try{
+    if(b.dataset.qe){qeOpen(find(b.dataset.qe));return}
+    if(b.dataset.qh){const q=find(b.dataset.qh),d={c:q.c,t:q.t,q:q.q,o:q.o,a:q.a,e:q.e||'',yashirin:true,yangilangan:firebase.firestore.FieldValue.serverTimestamp()};await db.collection('savollar').doc(q.id).set(d);OVR[q.id]=d}
+    else if(b.dataset.qr||b.dataset.qd){
+      const id=b.dataset.qr||b.dataset.qd;
+      if(b.dataset.qd&&!confirm("Bu savol butunlay o'chirilsinmi?"))return;
+      await db.collection('savollar').doc(id).delete();delete OVR[id];
+    }else return;
+    rebuildBank();qeList();
+  }catch(err){$('qInfo').textContent='Bajarilmadi. '+errMsg(err)}
+});
+async function startTeacher(){
+  $('uName').textContent="O'qituvchi";$('uBall').innerHTML='';document.body.className='t';
+  $('tRank').appendChild($('rank'));
+  await bankP;await loadOvr();qeInit();loadT();loadRank();
 }
 function cloudSave(){if(!me||isT(me))return;clearTimeout(tmr);tmr=setTimeout(push,1500)}
 addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&tmr)push()});
@@ -420,7 +641,7 @@ auth.onAuthStateChanged(async u=>{
   me=u;
   if(!u){document.body.className='out';authUI();return}
   $('uEm').textContent=u.email;
-  if(isT(u)){$('uName').textContent="O'qituvchi";document.body.className='t';loadT();return}
+  if(isT(u)){startTeacher();return}
   if(!okDom(u.email)){me=null;await auth.signOut();$('aErr').textContent=DOMERR;return}
   if(!u.emailVerified){$('vEm').textContent=u.email;$('vMsg').textContent='';document.body.className='out verify';return}
   startApp(u);
@@ -446,7 +667,9 @@ async function startApp(u){
     prog=jp(d.prog,{});custom=jp(d.custom,[]);if(!Array.isArray(custom))custom=[];
     custom.forEach(q=>{if(!q.c||!COURSES[q.c])q.c='cam-bio'});
     ism=d.ism||newName||u.displayName||'';
-    await bankP;
+    bugun=jp(d.bugun,{d:'',ids:[]});if(!Array.isArray(bugun.ids))bugun={d:'',ids:[]};
+    const r=await db.collection('reyting').doc(u.uid).get();ball=normBall(r.exists?r.data():null);
+    await bankP;await loadOvr();
     if(!exists)await push();
   }catch(err){
     me=null;await auth.signOut();
@@ -454,7 +677,7 @@ async function startApp(u){
   }
   $('uName').textContent=ism||u.email;
   document.body.className='';
-  chips();stats();mine();next();
+  chips();stats();mine();next();showBall();loadRank();
 }
 
 $('tFan').innerHTML='<option value="">Barcha fanlar</option>'+SUBJ.map(([k,v])=>`<option>${esc(v)}</option>`).join('');
