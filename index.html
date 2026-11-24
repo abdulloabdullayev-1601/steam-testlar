@@ -167,7 +167,7 @@ body.wait #authForm,body:not(.wait) #aWait,body.wait #vBox,body:not(.verify) #vB
       <div class="seg" id="aTabs" role="group" aria-label="Kirish turi"><button type="button" data-a="in" aria-pressed="true">Kirish</button><button type="button" data-a="up" aria-pressed="false">Ro'yxatdan o'tish</button></div>
       <p class="note">Ro'yxatdan haqiqiy Gmail manzilingiz bilan bir marta o'tasiz, keyin har safar shu email bilan kirasiz. Ro'yxatdan o'tgach Gmail'ingizga tasdiqlash xati keladi. Natijalaringiz hisobingizda saqlanadi va o'qituvchingizga ko'rinadi.</p>
       <div id="nameRow" hidden><label for="aName">Ism va familiya</label><input id="aName" autocomplete="name"><label for="aSinf">Sinf</label><select id="aSinf"></select></div>
-      <label for="aEm">Email</label><input id="aEm" type="email" autocomplete="email" placeholder="ism@gmail.com" required>
+      <label for="aEm">Email</label><input id="aEm" type="text" inputmode="email" autocapitalize="none" spellcheck="false" autocomplete="username" placeholder="ism@gmail.com" required>
       <label for="aPw">Parol</label><input id="aPw" type="password" autocomplete="current-password" minlength="6" required>
       <div class="row"><button class="btn" id="aGo" type="submit">Kirish</button><button class="lnk" id="forgot" type="button">Parolni unutdingizmi?</button></div>
       <div class="err" id="aErr" role="alert"></div><div class="msg" id="aOk"></div>
@@ -433,7 +433,13 @@ let me=null,ism='',newName='',tmr=null,amode='in',TR=[],sinf='',newSinf='';
 const SINF=["8.01. Ahmad Al-Farg'oniy","8.02. Ahmad Al-Farg'oniy",'9.01. Abu Rayhon Beruniy','9.02. Abu Rayhon Beruniy','10.01. Abu Nasr Farobiy','10.02. Abu Nasr Farobiy','11.01. Alisher Navoiy','11.02. Alisher Navoiy'];
 const sinfOpts=first=>'<option value="">'+first+'</option>'+SINF.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
 const sk=s=>String(s||'').split(' ')[0].replace(/\.$/,'');
-const isT=u=>!!u&&(u.email||'').toLowerCase()===TEACHER;
+const TDOM='@ustoz.steam.test';
+const TEACHERS={'mr.muhammadyusuf':'Mr. Muhammadyusuf','mr.oktay':'Mr. Oktay','ms.endra':'Ms. Endra','mr.musoxon':'Mr. Musoxon','mr.nozim':'Mr. Nozim','mr.jonathan':'Mr. Jonathan','ms.zamira':'Ms. Zamira','mr.nodirbek':'Mr. Nodirbek','mr.xumoyun':'Mr. Xumoyun','mr.uche':'Mr. Uche','mr.saidjalol':'Mr. Saidjalol','mr.rustamjon':'Mr. Rustamjon','mr.kakai':'Mr. Kakai','mr.umidjon':'Mr. Umidjon','ms.hazel':'Ms. Hazel','mr.saydullo':'Mr. Saydullo','mr.abduxakim':'Mr. Abduxakim','mr.sobidxon':'Mr. Sobidxon','mr.wasif':'Mr. Wasif'};
+const mail=u=>((u&&u.email)||'').toLowerCase();
+const tName=u=>{const m=mail(u);return m.endsWith(TDOM)&&Object.hasOwn(TEACHERS,m.slice(0,-TDOM.length))?TEACHERS[m.slice(0,-TDOM.length)]:''};
+const isAdmin=u=>mail(u)===TEACHER;
+const isT=u=>isAdmin(u)||!!tName(u);
+const fullMail=s=>{s=s.trim();return s&&!s.includes('@')?s.toLowerCase()+TDOM:s};
 const okDom=em=>/^[^+\s@]+@gmail\.com$/i.test(String(em||'').trim());
 const DOMERR="Faqat haqiqiy Gmail manzili (…@gmail.com) bilan ro'yxatdan o'tish mumkin. «+» belgisi ishlatilmasin.";
 const jp=(s,f)=>{try{const v=JSON.parse(s);return v&&typeof v==='object'?v:f}catch(e){return f}};
@@ -614,9 +620,9 @@ $('qList').addEventListener('click',async e=>{
   }catch(err){$('qInfo').textContent='Bajarilmadi. '+errMsg(err)}
 });
 async function startTeacher(){
-  $('uName').textContent="O'qituvchi";$('uBall').innerHTML='';document.body.className='t';
+  $('uName').textContent=tName(me)||"O'qituvchi";$('uEm').textContent=tName(me)?mail(me).slice(0,-TDOM.length):mail(me);$('qed').hidden=!isAdmin(me);$('uBall').innerHTML='';document.body.className='t';
   $('tRank').appendChild($('rank'));
-  await bankP;await loadOvr();qeInit();loadT();loadRank();
+  await bankP;if(isAdmin(me)){await loadOvr();qeInit()}loadT();loadRank();
 }
 function cloudSave(){if(!me||isT(me))return;clearTimeout(tmr);tmr=setTimeout(push,1500)}
 addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'&&tmr)push()});
@@ -632,7 +638,7 @@ function authUI(){
 }
 $('aTabs').addEventListener('click',e=>{const b=e.target.closest('button');if(b){amode=b.dataset.a;$('aErr').textContent='';$('aOk').textContent='';authUI()}});
 $('authForm').addEventListener('submit',async e=>{
-  e.preventDefault();const em=$('aEm').value.trim(),pw=$('aPw').value;
+  e.preventDefault();const em=amode==='up'?$('aEm').value.trim():fullMail($('aEm').value),pw=$('aPw').value;
   $('aErr').textContent='';$('aOk').textContent='';$('aGo').disabled=true;
   try{
     if(amode==='up'){
@@ -649,7 +655,8 @@ $('authForm').addEventListener('submit',async e=>{
   $('aGo').disabled=false;
 });
 $('forgot').addEventListener('click',async()=>{
-  const em=$('aEm').value.trim();$('aOk').textContent='';
+  const em=fullMail($('aEm').value);$('aOk').textContent='';
+  if(em.toLowerCase().endsWith(TDOM)){$('aErr').textContent="Ustoz parolini administrator yangilab beradi.";return}
   if(!em){$('aErr').textContent='Avval emailingizni yozing.';$('aEm').focus();return}
   try{await auth.sendPasswordResetEmail(em);$('aErr').textContent='';$('aOk').textContent='Parolni tiklash havolasi '+em+' manziliga yuborildi.'}
   catch(err){$('aErr').textContent=errMsg(err)}
